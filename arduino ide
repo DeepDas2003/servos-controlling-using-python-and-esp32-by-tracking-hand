@@ -1,0 +1,37 @@
+#include <Wire.h>
+#include <Adafruit_PWMServoDriver.h>
+
+Adafruit_PWMServoDriver board = Adafruit_PWMServoDriver(0x40);
+
+#define SERVOMIN 125
+#define SERVOMAX 575
+
+void setup() {
+  Serial.begin(9600);
+  board.begin();
+  board.setPWMFreq(60);
+  delay(10);
+}
+
+void loop() {
+  if (Serial.available() >= 5) {
+    char fingerStates[6] = {0};
+    Serial.readBytes(fingerStates, 5);
+    fingerStates[5] = '\0';
+
+    moveFinger(0, fingerStates[0]); // Thumb (servo 0)
+    moveFinger(1, fingerStates[1]); // Index
+    moveFinger(2, fingerStates[2]); // Middle
+    moveFinger(3, fingerStates[3]); // Ring
+    moveFinger(4, fingerStates[4]); // Pinky
+  }
+}
+
+void moveFinger(uint8_t channel, char state) {
+  int angle = (state == '1') ? 0 : 90;  // Adjust angles as needed
+  board.setPWM(channel, 0, angleToPulse(angle));
+}
+
+int angleToPulse(int ang) {
+  return map(ang, 0, 180, SERVOMIN, SERVOMAX);
+}
