@@ -1,0 +1,41 @@
+import cvzone
+import cv2
+from cvzone.HandTrackingModule import HandDetector
+import serial
+
+# Initialize camera
+cam = cv2.VideoCapture(0)
+
+# Initialize detector
+detector = HandDetector(staticMode=False, maxHands=1, modelComplexity=1, detectionCon=0.5, minTrackCon=0.5)
+
+# Initialize serial to ESP32
+esp32 = serial.Serial('COM6', 9600)
+
+while True:
+    success, img = cam.read()
+    if not success:
+        break
+
+    hands, img = detector.findHands(img, draw=True, flipType=False)
+
+    if hands:
+        hand = hands[0]
+        fingers = detector.fingersUp(hand)
+
+        # Example: [1, 1, 1, 1, 1] when all fingers up
+        print("Fingers:", fingers)
+
+        # Convert list to string to send directly (e.g., "11111" or "10000")
+        finger_str = ''.join(str(x) for x in fingers)
+
+        # Send to ESP32
+        esp32.write(finger_str.encode())
+
+    cv2.imshow("Hand Tracking", img)
+
+    if cv2.waitKey(1) & 0xFF == ord('q'):
+        break
+
+cam.release()
+cv2.destroyAllWindows()
