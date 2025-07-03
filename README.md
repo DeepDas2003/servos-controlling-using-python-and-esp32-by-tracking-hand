@@ -1,9 +1,13 @@
 As a beginner in IOT I have tried creating hand tracking servo control by showing each finger.
 
 I used various finger to control them
+
 thumb:-1st servo
+
 index finger:-2nd servo
+
 middle finger:- 3rd servo
+
 
 **REQUIREMENTS**
 
