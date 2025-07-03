@@ -6,10 +6,15 @@ index finger:-2nd servo
 middle finger:- 3rd servo
 
 **REQUIREMENTS**
+
 pyserial
+
 opencv
+
 ep32
+
 16 channel pwm(for multple servo controlling)
+
 servos
 
 
